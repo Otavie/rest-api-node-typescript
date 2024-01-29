@@ -7,7 +7,8 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const compression = require('compression')
 const cors = require('cors')
-const router = require('./routes')
+import router from "./routes"
+
 
 const PORT = process.env.PORT
 const DB_URI = process.env.DB_URI
