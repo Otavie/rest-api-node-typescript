@@ -3,7 +3,36 @@ const users = require('../controllers/users')
 import { authentication, random } from "../helpers";
 
 export const login = async (req: Request, res: Response) => {
-    
+    try {
+        const { email, password } = req.body
+        
+        if (!email || !password) {
+            return res.status(400).send('No email or password provided!')
+        }
+
+        const user = await users.getUserByEmail(email).select('+authentication.salt +authentication.password')
+
+        if (!user) {
+            return res.status(404).send('User not found')
+        }
+
+        const expectedHash = authentication(user.authentication.salt, password)
+
+        if (user.authentication.password !== expectedHash) {
+            return res.status(403).send('Authentication failed!')
+        }
+
+        const salt = random()
+        user.authentication.sessionToken = authentication(salt, user._id.toString())
+        await user.save()
+
+        res.cookie('OTAVIE-COOKIE', user.authentication.sessionToken, { domain: 'localhost', path: '/' })
+        return res.status(200).send('').json(user).end()
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send('Cannot login. Internal server error!')
+    }
 }
 
 export const register = async(req: Request, res: Response) => {
@@ -17,7 +46,6 @@ export const register = async(req: Request, res: Response) => {
         const existingUser = await users.getUserByEmail(email)
 
         if (existingUser) {
-            // return res.sendStatus(400).send('User already exist!')
             return res.status(400).send('User already exist!')
         }
 
@@ -32,10 +60,10 @@ export const register = async(req: Request, res: Response) => {
             }
         })
 
-        return res.status(200).json(user).end();
+        return res.status(200).send('User added to database!').json(user).end();
 
     } catch (error) {
         console.log(error)
-        return res.sendStatus(400)
+        return res.status(500).send('Cannot register. Internal server error!')
     }
 }
