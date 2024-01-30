@@ -1,6 +1,10 @@
 import { Request, Response } from "express"
-const users = require('../database/users')
+const users = require('../controllers/users')
 import { authentication, random } from "../helpers";
+
+export const login = async (req: Request, res: Response) => {
+    
+}
 
 export const register = async(req: Request, res: Response) => {
     try {
