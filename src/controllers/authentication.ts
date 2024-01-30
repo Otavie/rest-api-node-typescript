@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { createUser, getUserByEmail } from "../database/users";
+const users = require('../database/users')
 import { authentication, random } from "../helpers";
 
 export const register = async(req: Request, res: Response) => {
@@ -10,16 +10,18 @@ export const register = async(req: Request, res: Response) => {
             return res.sendStatus(400);
         }
 
-        const existingUser = await getUserByEmail(email)
+        const existingUser = await users.getUserByEmail(email)
 
         if (existingUser) {
-            return res.sendStatus(400)
+            // return res.sendStatus(400).send('User already exist!')
+            return res.status(400).send('User already exist!')
         }
 
         const salt = random();
-        const user = await createUser({
+
+        const user = await users.createUser({
             email,
-            password,
+            username,
             authentication: {
                 salt,
                 password: authentication(salt, password)

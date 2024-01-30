@@ -26,22 +26,43 @@ const userSchema = new mongoose.Schema({
 
 const userModel = mongoose.model('userModel', userSchema);
 
-module.exports = userModel
-
-export const getUsers = () => userModel.find()
-export const getUserByEmail = (email: string) => userModel.findOne({ email })
-export const getUserBySessionToken = (sessionToken: string) => {
+// xxxxxxxxxxxxxxxxxxxxxxx
+const getUsers = () => userModel.find()
+const getUserByEmail = (email: string) => userModel.findOne({ email })
+const getUserBySessionToken = (sessionToken: string) => {
     userModel.findOne({
         'authentication.sessionToken': sessionToken
     })
 }
-export const getUserById = (id: string) => userModel.findById(id) 
-export const createUser = (values: Record<string, any>) => {
+const getUserById = (id: string) => userModel.findById(id) 
+
+const createUser = (values: Record<string, any>) => {
+    // Ensure that 'authentication' is a string before saving
+    values.authentication = JSON.stringify(values.authentication)
+    
     new userModel(values)
         .save()
         .then((user: any) => user.toObject())
+        .catch((error: Error) => {
+            console.log(error)
+            throw error
+        })
 }
-export const deleteUserById = (id: string) => userModel.findOneAndDelete({ _id: id })
-export const updateUserById = (id: string, values: Record<string, any>) => {
+
+const deleteUserById = (id: string) => userModel.findOneAndDelete({ _id: id })
+const updateUserById = (id: string, values: Record<string, any>) => {
     userModel.findByIdAndUpdate(id, values)
+}
+
+
+
+module.exports = {
+    userModel,
+    getUsers,
+    getUserByEmail,
+    getUserBySessionToken,
+    getUserById,
+    createUser,
+    deleteUserById,
+    updateUserById,
 }
