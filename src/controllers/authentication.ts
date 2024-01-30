@@ -7,7 +7,7 @@ export const register = async(req: Request, res: Response) => {
         const { email, password, username } = req.body
 
         if (!email || !password || !username) {
-            return res.sendStatus(400);
+            return res.status(400).send('Email, password or username not provided!');
         }
 
         const existingUser = await users.getUserByEmail(email)
