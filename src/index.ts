@@ -31,6 +31,15 @@ server.listen(PORT, () => {
 
 mongoose.Promise = Promise
 mongoose.connect(DB_URI)
+
+mongoose.connection.on('connected', () => {
+    console.log(`Connected to the DB`)
+})
+
+mongoose.connection.on('disconnected', () => {
+    console.log(`Disconnected from the DB`)
+})
+
 mongoose.connection.on('error', (error: Error) => {
     console.log(`Error connecting to the DB`, error)
 })
