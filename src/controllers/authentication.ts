@@ -1,5 +1,8 @@
 import { Request, Response } from "express"
-const users = require('../controllers/users')
+import {
+    getUserByEmail,
+    createUser
+} from "./users";
 import { authentication, random } from "../helpers";
 
 export const login = async (req: Request, res: Response) => {
@@ -12,7 +15,8 @@ export const login = async (req: Request, res: Response) => {
         }
 
         
-        const user = await users.getUserByEmail(email).select('+authentication.salt +authentication.password')
+        // const user = await users.getUserByEmail(email).select('+authentication.salt +authentication.password')
+        const user = await getUserByEmail(email)
         
 
 
@@ -58,7 +62,7 @@ export const register = async(req: Request, res: Response) => {
             return res.status(400).send('Email, password or username not provided!');
         }
 
-        const existingUser = await users.getUserByEmail(email)
+        const existingUser = await getUserByEmail(email)
 
         if (existingUser) {
             return res.status(400).send('User already exist!')
@@ -66,7 +70,7 @@ export const register = async(req: Request, res: Response) => {
 
         const salt = random();
 
-        const user = await users.createUser({
+        const user = await createUser({
             email,
             username,
             authentication: {

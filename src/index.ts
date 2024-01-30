@@ -1,12 +1,12 @@
+import dotenv from 'dotenv'
+dotenv.config()
+import express from 'express'
+import http from 'http'
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 import mongoose from "mongoose"
-
-require('dotenv').config()
-const express = require('express')
-const http = require('http')
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
-const compression = require('compression')
-const cors = require('cors')
+import compression from 'compression'
+import cors from 'cors'
 import router from "./routes"
 
 
@@ -15,7 +15,7 @@ const DB_URI = process.env.DB_URI
 
 const app = express()
 
-app.use(express.json())
+// app.use(express.json())
 
 app.use(cors({
     credentials: true

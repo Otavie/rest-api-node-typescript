@@ -1,4 +1,4 @@
-const crypto = require('crypto')
+import crypto from 'crypto'
 
 const SECRET_API_KEY = process.env.SECRET
 

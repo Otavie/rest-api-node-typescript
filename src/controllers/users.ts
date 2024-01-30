@@ -1,23 +1,26 @@
-const UserModel = require('../model/users')
+import { UserModel } from '../model/users'
 
-const getUsers = () => UserModel.find()
-
-
-const getUserByEmail = (email: string) => {
-    UserModel.findOne({ email }).select('authentication.salt +authentication.password')
-}
+export const getUsers = () => UserModel.find()
 
 
+// export const getUserByEmail = (email: string) => {
+//     UserModel.findOne({ email }).select('authentication.salt +authentication.password')
+// }
 
-const getUserBySessionToken = (sessionToken: string) => {
+export const getUserByEmail = (email: string) => UserModel.findOne({ email }).select('+authentication.salt +authentication.password');
+
+
+
+
+export const getUserBySessionToken = (sessionToken: string) => {
     UserModel.findOne({
         'authentication.sessionToken': sessionToken
     })
 }
 
-const getUserById = (id: string) => UserModel.findById(id) 
+export const getUserById = (id: string) => UserModel.findById(id) 
 
-const createUser = (values: Record<string, any>) => {
+export const createUser = (values: Record<string, any>) => {
     // Ensure that 'authentication' is a string before saving
     values.authentication = JSON.stringify(values.authentication)
 
@@ -30,18 +33,8 @@ const createUser = (values: Record<string, any>) => {
         })
 }
 
-const deleteUserById = (id: string) => UserModel.findOneAndDelete({ _id: id })
+export const deleteUserById = (id: string) => UserModel.findOneAndDelete({ _id: id })
 
-const updateUserById = (id: string, values: Record<string, any>) => {
+export const updateUserById = (id: string, values: Record<string, any>) => {
     UserModel.findByIdAndUpdate(id, values)
-}
-
-module.exports = {
-    getUsers,
-    getUserByEmail,
-    getUserBySessionToken,
-    getUserById,
-    createUser,
-    deleteUserById,
-    updateUserById,
 }
