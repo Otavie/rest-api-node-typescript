@@ -5,21 +5,36 @@ import { authentication, random } from "../helpers";
 export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body
+        console.log(email, password)
         
         if (!email || !password) {
             return res.status(400).send('No email or password provided!')
         }
 
+        
         const user = await users.getUserByEmail(email).select('+authentication.salt +authentication.password')
+        
+
+
+        console.log(user);
+
 
         if (!user) {
             return res.status(404).send('User not found')
         }
 
+
+
+        if (!user.authentication || !user.authentication.salt) {
+            return res.status(403).send('Authentication failed!');
+        }
+
+        
+
         const expectedHash = authentication(user.authentication.salt, password)
 
         if (user.authentication.password !== expectedHash) {
-            return res.status(403).send('Authentication failed!')
+            return res.status(403).send('Password authentication failed!')
         }
 
         const salt = random()
@@ -27,11 +42,11 @@ export const login = async (req: Request, res: Response) => {
         await user.save()
 
         res.cookie('OTAVIE-COOKIE', user.authentication.sessionToken, { domain: 'localhost', path: '/' })
-        return res.status(200).send('').json(user).end()
+        return res.status(200).send('Logged in successfully!').json(user).end()
         
     } catch (error) {
         console.log(error)
-        return res.status(500).send('Cannot login. Internal server error!')
+        return res.status(400).send('Invalid request body!')
     }
 }
 
@@ -64,6 +79,6 @@ export const register = async(req: Request, res: Response) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(500).send('Cannot register. Internal server error!')
+        return res.status(400).send('Invalid request body!')
     }
 }

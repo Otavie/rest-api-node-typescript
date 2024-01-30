@@ -2,7 +2,12 @@ const UserModel = require('../model/users')
 
 const getUsers = () => UserModel.find()
 
-const getUserByEmail = (email: string) => UserModel.findOne({ email })
+
+const getUserByEmail = (email: string) => {
+    UserModel.findOne({ email }).select('authentication.salt +authentication.password')
+}
+
+
 
 const getUserBySessionToken = (sessionToken: string) => {
     UserModel.findOne({
