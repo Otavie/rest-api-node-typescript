@@ -39,7 +39,7 @@ const getUserById = (id: string) => userModel.findById(id)
 const createUser = (values: Record<string, any>) => {
     // Ensure that 'authentication' is a string before saving
     values.authentication = JSON.stringify(values.authentication)
-    
+
     new userModel(values)
         .save()
         .then((user: any) => user.toObject())
