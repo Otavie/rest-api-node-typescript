@@ -9,7 +9,7 @@ export const validateUserMiddleware = async (req: Request, res: Response, next: 
         next()
     } catch (error) {
         console.log(error)
-        return res.status(406).send(error.detail[0].message)
+        return res.status(400).send(error.details[0].message)
     }
 }
 
@@ -24,5 +24,11 @@ const userValidator = Joi.object({
             minDomainSegments: 2,
             tlds: { allow: ['com', 'org'] }
         })
-        .required()
+        .required(),
+    authentication: Joi.object({
+        password: Joi.string()
+            .min(2)
+            .required(),
+        salt: Joi.string(),
+    })
 })
