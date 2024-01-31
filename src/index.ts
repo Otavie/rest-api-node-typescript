@@ -15,8 +15,6 @@ const DB_URI = process.env.DB_URI
 
 const app = express()
 
-// app.use(express.json())
-
 app.use(cors({
     credentials: true
 }))

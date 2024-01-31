@@ -1,8 +1,5 @@
 import { Request, Response } from "express"
-import {
-    getUserByEmail,
-    createUser
-} from "./users";
+import { getUserByEmail, createUser } from "./users";
 import { authentication, random } from "../helpers";
 
 export const login = async (req: Request, res: Response) => {
